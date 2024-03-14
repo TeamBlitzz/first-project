@@ -1,36 +1,41 @@
+//Importing all the needed libraries and all
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import "./login.css";
 
+//defining login function
 export default function login() {
+  //useState definition for user details and all the fields  
   const [userDetails, setUserDetails] = useState({
-    Username: "",
-    Password: "",
+    email: "",
+    password: "",
   });
 
+  //function to handel inputs i.e. fill userDetails fields with entered values in text box
   function handelInputs(event) {
     setUserDetails((prevState) => {
-      return { ...prevState, [event.target.name]: event.target.value };
+      return { ...prevState, [event.target.name]: event.target.value }; //this is the syntax, learn on the go
     });
   }
 
+  //function to handel submit and call apis
   function handelSubmit(event) {
     event.preventDefault();
     console.log(userDetails);
 
+    //calling backend api here
     fetch("http://localhost:8000/", {
       method: "POST",
       body: JSON.stringify(userDetails),
       headers: { "Content-Type": "application/json" },
     })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((err)=>{
-        console.log(err)
+      .then((response) => response.json()) //for getting only the sent response from backend and removing other info
+      .then((data)=>{console.log(data)})
+      .catch((err) => {
+        console.log(err);
       });
   }
-
+  //basic HTML and for form design
   return (
     <div className="wrapper">
       <form className="form" onSubmit={handelSubmit}>
@@ -38,15 +43,15 @@ export default function login() {
           <h1>Login</h1>
           <p>Welcome back! Please login to you account.</p>
           <div className="input-text">
-            <label htmlFor="text">Username</label>
+            <label htmlFor="text">Email</label>
           </div>
           <div className="input-box">
             <input
               className="inp-box"
-              type="text"
-              name="Username"
+              type="email"
+              name="email"
               onChange={handelInputs}
-              value={userDetails.Username}
+              value={userDetails.email}
               required
             ></input>
           </div>
@@ -57,7 +62,7 @@ export default function login() {
             <input
               className="inp-box"
               type="password"
-              name="Password"
+              name="password"
               onChange={handelInputs}
               value={userDetails.Password}
               required
